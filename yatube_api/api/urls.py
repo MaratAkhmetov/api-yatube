@@ -20,21 +20,6 @@ v1_router.register(
 )
 
 urlpatterns = [
-    path(
-        'v1/posts/<int:post_id>/comments/',
-        CommentViewSet.as_view({'get': 'list', 'post': 'create'}),
-        name='comment-list'
-    ),
-    path(
-        'v1/posts/<int:post_id>/comments/<int:pk>/',
-        CommentViewSet.as_view({
-            'get': 'retrieve',
-            'put': 'update',
-            'patch': 'partial_update',
-            'delete': 'destroy'
-        }),
-        name='comment-detail'
-    ),
     path('v1/api-token-auth/', obtain_auth_token),
     path('v1/', include(v1_router.urls)),
 ]
