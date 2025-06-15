@@ -17,17 +17,13 @@ class PostSerializer(serializers.ModelSerializer):
     Отображает данные поста, включая автора и группу.
     Автор доступен только для чтения.
     """
-    author = serializers.StringRelatedField(read_only=True)
-    group = serializers.SlugRelatedField(
-        queryset=Group.objects.all(),
-        slug_field='slug',
-        required=False,
-        allow_null=True
-    )
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
 
     class Meta:
         model = Post
         fields = '__all__'
+        read_only_fields = ('author', 'group')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -36,9 +32,10 @@ class CommentSerializer(serializers.ModelSerializer):
     Используется для отображения всех полей комментария.
     Автор и пост доступны только для чтения.
     """
-    author = serializers.StringRelatedField(read_only=True)
-    post = serializers.PrimaryKeyRelatedField(read_only=True)
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
 
     class Meta:
         model = Comment
         fields = '__all__'
+        read_only_fields = ('author', 'post')

@@ -10,19 +10,23 @@ from rest_framework.authtoken.views import obtain_auth_token
 from .views import CommentViewSet, GroupViewSet, PostViewSet
 
 
-router = DefaultRouter()
-router.register(r'posts', PostViewSet, basename='post')
-router.register(r'groups', GroupViewSet, basename='group')
+v1_router = DefaultRouter()
+v1_router.register('posts', PostViewSet, basename='post')
+v1_router.register('groups', GroupViewSet, basename='group')
+v1_router.register(
+    r'posts/(?P<post_id>\d+)/comments',
+    CommentViewSet,
+    basename='comment'
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
     path(
-        'posts/<int:post_id>/comments/',
+        'v1/posts/<int:post_id>/comments/',
         CommentViewSet.as_view({'get': 'list', 'post': 'create'}),
         name='comment-list'
     ),
     path(
-        'posts/<int:post_id>/comments/<int:pk>/',
+        'v1/posts/<int:post_id>/comments/<int:pk>/',
         CommentViewSet.as_view({
             'get': 'retrieve',
             'put': 'update',
@@ -31,5 +35,6 @@ urlpatterns = [
         }),
         name='comment-detail'
     ),
-    path('api-token-auth/', obtain_auth_token),
+    path('v1/api-token-auth/', obtain_auth_token),
+    path('v1/', include(v1_router.urls)),
 ]

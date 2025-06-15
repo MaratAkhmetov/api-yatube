@@ -52,17 +52,17 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_post(self):
+        """Возвращает пост."""
+        return get_object_or_404(Post, id=self.kwargs.get('post_id'))
+
     def get_queryset(self):
         """Возвращает список комментариев к указанному посту."""
-        post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
-        return post.comments.all()
+        return self.get_post().comments.all()
 
     def perform_create(self, serializer):
         """Создаёт комментарий с текущим пользователем как автором."""
-        post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
-        serializer.save(author=self.request.user, post=post)
+        serializer.save(author=self.request.user, post=self.get_post())
 
     def perform_update(self, serializer):
         """Запрещает редактирование чужого комментария."""
